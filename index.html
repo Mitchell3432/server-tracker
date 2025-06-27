@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Server Tracker</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 40px;
+      background: #f2f2f2;
+      text-align: center;
+    }
+    select, button {
+      font-size: 1em;
+      margin: 10px;
+      padding: 10px;
+    }
+    #count {
+      font-size: 2.5em;
+      margin: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Server Tracker</h1>
+  <div>
+    <label>Location:</label>
+    <select id="location">
+      <option>Melbourne</option>
+      <option>New Zealand</option>
+    </select>
+    <label>Type:</label>
+    <select id="type">
+      <option>40D</option>
+      <option>30D</option>
+    </select>
+  </div>
+  <div id="count">0</div>
+  <button onclick="updateCount(-1)">−</button>
+  <button onclick="updateCount(1)">+</button>
+
+  <script>
+    async function fetchCount() {
+      const location = document.getElementById('location').value;
+      const type = document.getElementById('type').value;
+      const res = await fetch('http://localhost:3000/api/servers');
+      const data = await res.json();
+      const count = (data[location] && data[location][type]) || 0;
+      document.getElementById('count').textContent = count;
+    }
+
+    async function updateCount(change) {
+      const location = document.getElementById('location').value;
+      const type = document.getElementById('type').value;
+      const res = await fetch('http://localhost:3000/api/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ location, type, change })
+      });
+      const result = await res.json();
+      document.getElementById('count').textContent = result.count;
+    }
+
+    document.getElementById('location').addEventListener('change', fetchCount);
+    document.getElementById('type').addEventListener('change', fetchCount);
+    window.onload = fetchCount;
+  </script>
+</body>
+</html>
