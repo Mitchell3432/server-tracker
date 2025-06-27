@@ -44,7 +44,7 @@
     async function fetchCount() {
       const location = document.getElementById('location').value;
       const type = document.getElementById('type').value;
-      const res = await fetch('http://localhost:3000/api/servers');
+      const res = await fetch('https://server-tracker-0s23.onrender.com/');
       const data = await res.json();
       const count = (data[location] && data[location][type]) || 0;
       document.getElementById('count').textContent = count;
@@ -53,7 +53,7 @@
     async function updateCount(change) {
       const location = document.getElementById('location').value;
       const type = document.getElementById('type').value;
-      const res = await fetch('http://localhost:3000/api/update', {
+      const res = await fetch('https://server-tracker-0s23.onrender.com/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ location, type, change })
